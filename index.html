@@ -48,6 +48,10 @@
       #messages li:nth-child(odd) {
         background: #eee;
       }
+
+      .autoMsg {
+        font-style: italic;
+      }
     </style>
   </head>
   <script type="text/javascript" src="/socket.io/socket.io.js"></script>
@@ -92,7 +96,7 @@
     }
 
     function addAutoMsg (msg) {
-      var msgElement = $('<li>').html('<i>' + msg + '</i>');
+      var msgElement = $('<li class="autoMsg">').html(msg);
       addToMessages(msgElement);
     }
 
