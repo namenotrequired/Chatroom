@@ -60,6 +60,7 @@
     'use strict';
     var socket = io();
 
+    // Choose username & set in localStorage
     var username;
     if ('localStorage' in window && localStorage.getItem('username')) {
       username = localStorage.getItem('username');
@@ -89,8 +90,8 @@
       });
 
       // Receive disconnect message
-      socket.on('disconnect', function(username) {
-        addAutoMsg(username + ' left');
+      socket.on('disconnect', function(username, time) {
+        addAutoMsg(username + ' left after ' + time + ' seconds.');
       });
 
       // Receive join message

@@ -11,6 +11,7 @@ io.on('connection', function(socket) {
 
   socket.on('join', function(username) {
     socket.username = username;
+    socket.joinedAt = new Date();
     io.emit('join', username);
   });
 
@@ -19,9 +20,10 @@ io.on('connection', function(socket) {
   });
 
   socket.on('disconnect', function() {
-    io.emit('disconnect', socket.username);
+    var timeOnline = new Date() - socket.joinedAt;
+    var timeOnlineSeconds = Math.ceil(timeOnline / 1000);
+    io.emit('disconnect', socket.username, timeOnlineSeconds);
   });
-
 });
 
 http.listen(3000, function() {
