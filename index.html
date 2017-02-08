@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+  <head>
+    <title>TutorChat</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font: 13px Helvetica, Arial;
+      }
+
+      #sendForm {
+        background: #000;
+        padding: 3px;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+      }
+
+      #sendForm input {
+        border: 0;
+        padding: 10px;
+        width: 90%;
+        margin-right: .5%;
+      }
+
+      #sendForm button {
+        width: 9%;
+        background: rgb(130, 224, 255);
+        border: none;
+        padding: 10px;
+      }
+
+      #messages {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      #messages li {
+        padding: 5px 10px;
+      }
+
+      #messages li:nth-child(odd) {
+        background: #eee;
+      }
+    </style>
+  </head>
+  <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+  <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+  <script type="text/javascript">
+    'use strict';
+    var socket = io();
+
+    $(document).ready(function() {
+      // Send a chat message
+      $('form').submit(function(e) {
+        e.preventDefault();
+
+        var msg = $('#writeMsg').val();
+        socket.emit('chat message', msg);
+
+        $('#writeMsg').val('');
+      });
+
+      // Receive message
+      socket.on('chat message', function(msg) {
+        addUserMsg(msg);
+      });
+
+      // Receive disconnect message
+      socket.on('leave', function() {
+        addAutoMsg('Someone left');
+      });
+
+      // Receive join message
+      socket.on('join', function() {
+        var isChatEmpty = $('#messages').children().length === 0;
+        var whoJoined = isChatEmpty ? 'You' : 'Someone';
+
+        addAutoMsg(whoJoined + ' joined');
+      });
+    });
+
+    // Generic functions to add to messages
+    function addToMessages (msgElement) {
+      $('#messages').append(msgElement);
+    }
+
+    function addAutoMsg (msg) {
+      var msgElement = $('<li>').html('<i>' + msg + '</i>');
+      addToMessages(msgElement);
+    }
+
+    function addUserMsg (msg) {
+      var msgElement = $('<li>').text(msg);
+      addToMessages(msgElement);
+    }
+  </script>
+  <body>
+    <ul id="messages">
+    </ul>
+    <form id="sendForm" action="">
+      <input id="writeMsg" autocomplete="off" autofocus />
+      <button id="sendMsg">Send</button>
+    </form>
+  </body>
+</html>

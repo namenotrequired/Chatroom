@@ -1,0 +1,14 @@
+Exercise (to be done in Node or Meteor, use Github)
+
+Choose just one option:
+
+Option 1. Create a simple chat application that allow two users to communicate with each other.
+Bonus*: count how long did the conversation lasted (start/end time).
+
+Option 2. Create a simple application to show Twitter feeds. Allow the user to save his preferred tweets and see them later.
+Bonus*: allow the user to search specific words in his saved tweets.
+
+* optional - if you have time and/or know how to do it. You can also just discuss how you would implement it.
+
+
+Have fun! =)
