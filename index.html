@@ -78,23 +78,28 @@
     socket.emit('join', username);
 
     $(document).ready(function() {
-      // Send a chat message
+      // Send a message
       $('form').submit(function(e) {
         e.preventDefault();
 
         var msg = $('#writeMsg').val();
-        socket.emit('chat message', msg);
+        socket.emit('message', msg);
 
         $('#writeMsg').val('');
       });
 
       // Receive message
-      socket.on('chat message', function(msg, username) {
+      socket.on('message', function(msg, username) {
         addUserMsg(msg, username);
       });
 
       // Receive disconnect message
       socket.on('disconnect', function(username, time) {
+
+        if (username === 'transport close' && time === undefined) {
+          return;
+        }
+
         var unit = (time === 1) ? 'second' : 'seconds';
         addAutoMsg(`${username} left after ${time} ${unit}.`);
       });

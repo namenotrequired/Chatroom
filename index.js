@@ -15,13 +15,13 @@ io.on('connection', function(socket) {
     io.emit('join', username);
   });
 
-  socket.on('chat message', function(msg) {
-    io.emit('chat message', msg, socket.username);
+  socket.on('message', function(msg) {
+    io.emit('message', msg, socket.username);
   });
 
   socket.on('disconnect', function() {
-    var miliSecondsOnline = new Date() - socket.joinedAt;
-    var secondsOnline = Math.round(miliSecondsOnline / 1000);
+    var timeOnline = new Date() - socket.joinedAt;
+    var secondsOnline = Math.round(timeOnline / 1000);
     io.emit('disconnect', socket.username, secondsOnline);
   });
 });
