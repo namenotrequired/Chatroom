@@ -3,29 +3,40 @@ var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-app.get('/', function(req, res) {
-  res.sendFile(__dirname + '/index.html');
+// Router
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/index.html');
 });
 
-io.on('connection', function(socket) {
-
-  socket.on('join', function(username) {
-    socket.username = username;
-    socket.joinedAt = new Date();
-    io.emit('join', username);
-  });
-
-  socket.on('message', function(msg) {
-    io.emit('message', msg, socket.username);
-  });
-
-  socket.on('disconnect', function() {
-    var timeOnline = new Date() - socket.joinedAt;
-    var secondsOnline = Math.round(timeOnline / 1000);
-    io.emit('disconnect', socket.username, secondsOnline);
-  });
+app.get('/style.css', (req, res) => {
+    res.sendFile(__dirname + '/style.css');
 });
 
-http.listen(3000, function() {
-  console.log('Listening on *:3000');
+// Organise chat
+io.on('connection', (socket) => {
+    // Join
+    socket.on('join', (username) => {
+
+        socket.username = username;
+        socket.joinedAt = new Date();
+
+        io.emit('join', username);
+    });
+
+    // Send chat messages
+    socket.on('message', (msg) => {
+        io.emit('message', msg, socket.username);
+    });
+
+    // Send leave messages
+    socket.on('disconnect', () => {
+        var timeOnline = new Date() - socket.joinedAt;
+        var secondsOnline = Math.round(timeOnline / 1000);
+
+        io.emit('disconnect', socket.username, secondsOnline);
+    });
+});
+
+http.listen(3000, () => {
+    console.log('Listening on port 3000');
 });
