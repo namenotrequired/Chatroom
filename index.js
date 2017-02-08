@@ -9,16 +9,17 @@ app.get('/', function(req, res) {
 
 io.on('connection', function(socket) {
 
-  console.log(socket);
-
-  io.emit('join');
+  socket.on('join', function(username) {
+    socket.username = username;
+    io.emit('join', username);
+  });
 
   socket.on('chat message', function(msg) {
     io.emit('chat message', msg);
   });
 
   socket.on('disconnect', function() {
-    io.emit('leave');
+    io.emit('disconnect', socket.username);
   });
 
 });

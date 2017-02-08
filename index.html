@@ -60,6 +60,18 @@
     'use strict';
     var socket = io();
 
+    var username;
+    if ('localStorage' in window && localStorage.getItem('username')) {
+      username = localStorage.getItem('username');
+    } else {
+      username = window.prompt('Hi! To enter TutorChat, choose a username.');
+      if ('localStorage' in window) {
+        localStorage.setItem('username', username);
+      }
+    }
+
+    socket.emit('join', username);
+
     $(document).ready(function() {
       // Send a chat message
       $('form').submit(function(e) {
@@ -77,16 +89,13 @@
       });
 
       // Receive disconnect message
-      socket.on('leave', function() {
-        addAutoMsg('Someone left');
+      socket.on('disconnect', function(username) {
+        addAutoMsg(username + ' left');
       });
 
       // Receive join message
-      socket.on('join', function() {
-        var isChatEmpty = $('#messages').children().length === 0;
-        var whoJoined = isChatEmpty ? 'You' : 'Someone';
-
-        addAutoMsg(whoJoined + ' joined');
+      socket.on('join', function(username) {
+        addAutoMsg(username + ' joined');
       });
     });
 
