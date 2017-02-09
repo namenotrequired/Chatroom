@@ -7,6 +7,7 @@
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <script type="text/javascript">
+        /* global io:false */
         'use strict';
         var socket = io();
 
@@ -15,7 +16,7 @@
         if ('localStorage' in window && localStorage.getItem('username')) {
             username = localStorage.getItem('username');
         } else {
-            username = window.prompt('Hi! To enter Chatroom, choose a username.');
+            username = window.prompt('Hi! To enter Chatroom, tell us your name.');
             if ('localStorage' in window) {
                 localStorage.setItem('username', username);
             }
@@ -57,16 +58,16 @@
         });
 
         // Generic functions to add to messages
-        function addToMessages (msgElement) {
+        var addToMessages = (msgElement) => {
             $('#messages').append(msgElement);
-        }
+        };
 
-        function addAutoMsg (msg) {
+        var addAutoMsg = (msg) => {
             var msgElement = $('<li class="autoMsg">').html(msg);
             addToMessages(msgElement);
-        }
+        };
 
-        function addUserMsg (msg, byUser) {
+        var addUserMsg = (msg, byUser) => {
             if (byUser === username) {
                 byUser = 'You';
             }
@@ -74,7 +75,7 @@
             var content = `<span class="username">${byUser}:</span> ${msg}`;
             var msgElement = $('<li>').html(content);
             addToMessages(msgElement);
-        }
+        };
     </script>
     <body>
         <ul id="messages">
