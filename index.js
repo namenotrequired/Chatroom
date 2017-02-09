@@ -9,17 +9,21 @@ app.get('/', (req, res) => {
 });
 
 app.get('/style.css', (req, res) => {
-    res.sendFile(__dirname + '/style.css');
+    res.sendFile(__dirname + 'public/style.css');
+});
+
+app.get('/chat.js', (req, res) => {
+    res.sendFile(__dirname + 'public/chat.js');
 });
 
 // Organise chat
 io.on('connection', (socket) => {
-    // Join
-    socket.on('join', (username) => {
 
+    socket.on('join', (username) => {
+        // Initialize connection
         socket.username = username;
         socket.joinedAt = new Date();
-
+        // Send join message to everyone
         io.emit('join', username);
     });
 
