@@ -1,25 +1,33 @@
 'use strict';
-var app = require('express')();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
 
+const app = require('express')();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+
+// ==================================================
 // Router
+// ==================================================
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html');
+    res.sendFile(`${__dirname}/index.html`);
 });
 
 app.get('/style.css', (req, res) => {
-    res.sendFile(__dirname + '/style.css');
+    res.sendFile(`${__dirname}/public/style.css`);
 });
 
-// Organise chat
-io.on('connection', (socket) => {
-    // Join
-    socket.on('join', (username) => {
+app.get('/chat.js', (req, res) => {
+    res.sendFile(`${__dirname}/public/chat.js`);
+});
 
+// ==================================================
+// Organise chat
+// ==================================================
+io.on('connection', (socket) => {
+    socket.on('join', (username) => {
+        // Initialize connection
         socket.username = username;
         socket.joinedAt = new Date();
-
+        // Send join message to everyone
         io.emit('join', username);
     });
 
@@ -30,8 +38,8 @@ io.on('connection', (socket) => {
 
     // Send leave messages
     socket.on('disconnect', () => {
-        var timeOnline = new Date() - socket.joinedAt;
-        var secondsOnline = Math.round(timeOnline / 1000);
+        const timeOnline = new Date() - socket.joinedAt;
+        const secondsOnline = Math.round(timeOnline / 1000);
 
         io.emit('disconnect', socket.username, secondsOnline);
     });
